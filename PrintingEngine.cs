@@ -19,9 +19,11 @@ namespace autoPrint
 
         public Size PatternGap { get; set; } = new Size(20, 20);
 
-        public Font Font { get; set; } = new Font("Arial", 10);
+        public Font TimestampFont { get; set; } = new Font("Arial", 10);
 
-        public Margins Margins = new Margins(50, 50, 50, 50);
+        public Font DiscardPageFont { get; set; } = new Font("Arial", 15);
+
+        public Margins Margins { get; set; } = new Margins(50, 50, 50, 50);
 
         public void Print()
         {
@@ -42,27 +44,16 @@ namespace autoPrint
             var y = eventArgs.MarginBounds.Top + printingState.CurrentLocation.Y;
 
             var timestamp = DateTimeOffset.Now.ToLocalTime().ToString();
-            var timestampSize = eventArgs.Graphics.MeasureString(timestamp, Font);
+            var timestampSize = eventArgs.Graphics.MeasureString(timestamp, TimestampFont);
+
+            const string DiscardPage = "This page is now full. Please discard it.";
+            var discardPageSize = eventArgs.Graphics.MeasureString(DiscardPage, DiscardPageFont);
 
             var patternSize = TargetPatternSize;
-            patternSize.Width = (int) Math.Max(patternSize.Width, timestampSize.Width);
-            patternSize.Height = (int) Math.Max(patternSize.Height, timestampSize.Height + 50);
+            patternSize.Width = (int)Math.Max(patternSize.Width, timestampSize.Width);
+            patternSize.Height = (int)Math.Max(patternSize.Height, timestampSize.Height + 50);
 
-            if (patternSize.Width + x > eventArgs.MarginBounds.Right)
-            {
-                x = eventArgs.MarginBounds.Left;
-                y += printingState.CurrentLineHeight + PatternGap.Height;
-                printingState.CurrentLineHeight = 0;
-
-                if (y + patternSize.Height > eventArgs.MarginBounds.Bottom)
-                {
-                    y = eventArgs.MarginBounds.Top; // Hopefully we have a new page.
-                }
-            }
-
-            UpdateState(x + patternSize.Width, y, patternSize.Height, eventArgs);
-
-            eventArgs.Graphics.DrawString(timestamp, Font, Brushes.Black, x, y);
+            eventArgs.Graphics.DrawString(timestamp, TimestampFont, Brushes.Black, x, y);
 
             var barWidth = CalculateBarWidth(patternSize.Width);
             var barHeight = patternSize.Height - (timestampSize.Height + BarGap);
@@ -74,13 +65,29 @@ namespace autoPrint
                 x += thisBarWidth + BarGap;
             }
 
+            if (patternSize.Width + x > eventArgs.MarginBounds.Right)
+            {
+                x = eventArgs.MarginBounds.Left;
+                y += printingState.CurrentLineHeight + PatternGap.Height;
+                printingState.CurrentLineHeight = 0;
+
+                if (y + patternSize.Height + PatternGap.Height * 2 + discardPageSize.Height > eventArgs.MarginBounds.Bottom)
+                {
+                    var discardPageX = (eventArgs.MarginBounds.Width - discardPageSize.Width) / 2 + eventArgs.MarginBounds.Left;
+
+                    eventArgs.Graphics.DrawString(DiscardPage, DiscardPageFont, Brushes.Red, discardPageX, y);
+                    y = eventArgs.MarginBounds.Top;
+                }
+            }
+
+            UpdateState(x, y, patternSize.Height, eventArgs);
             eventArgs.HasMorePages = false;
         }
 
         private void UpdateState(int x, int y, int height, PrintPageEventArgs eventArgs)
         {
             printingState.CurrentLocation = new Point(x - eventArgs.MarginBounds.Left, y - eventArgs.MarginBounds.Top);
-            printingState.CurrentLineHeight = (int) Math.Max(printingState.CurrentLineHeight, height);
+            printingState.CurrentLineHeight = (int)Math.Max(printingState.CurrentLineHeight, height);
         }
 
         private int CalculateBarWidth(int targetWidth)
@@ -88,7 +95,7 @@ namespace autoPrint
             var numberOfBarGaps = ColorsToPrint.Count - 1.0;
             var numberOfBarWidths = ColorsToPrint.Count + LargeColors.Count;
 
-            return (int) Math.Ceiling((targetWidth - (numberOfBarGaps * BarGap)) / numberOfBarWidths);
+            return (int)Math.Ceiling((targetWidth - (numberOfBarGaps * BarGap)) / numberOfBarWidths);
         }
 
         private Brush GetBrush(Color color)
