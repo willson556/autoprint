@@ -4,8 +4,6 @@ namespace autoPrint
 {
     class Program
     {
-        const string SomeTextToPrint = @"This is some text that I want to print!";
-
         static void Main(string[] args)
         {
             Console.Write("Printing... ");
