@@ -37,7 +37,8 @@ namespace autoPrint
 
         private void PrintPage(object sender, PrintPageEventArgs eventArgs)
         {
-            var x = eventArgs.MarginBounds.Left + printingState.CurrentLocation.X + PatternGap.Width;
+            var xOffset = printingState.CurrentLocation.X == 0 ? 0 : PatternGap.Width;
+            var x = eventArgs.MarginBounds.Left + printingState.CurrentLocation.X + xOffset;
             var y = eventArgs.MarginBounds.Top + printingState.CurrentLocation.Y;
 
             var timestamp = DateTimeOffset.Now.ToLocalTime().ToString();
