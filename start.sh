@@ -4,7 +4,10 @@
 cupsd
 
 # Add printer
-lpadmin -p defaultPrinter -v $PRINTER_URI -m everywhere
+lpadmin -p myPrinter -v $PRINTER_URI -m everywhere
+cupsaccept myPrinter
+cupsenable myPrinter
+lpoptions -d myPrinter
 
 # Run Cron
 /usr/sbin/cron -f

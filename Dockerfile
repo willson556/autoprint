@@ -19,7 +19,7 @@ COPY --from=build /build/out ./
 RUN apt-get update -qq && apt-get -y install cron libgdiplus cups avahi-daemon -qq --force-yes
 
 # Add export environment variable script and schedule
-RUN echo "0 8 */2 * * root dotnet /app/autoprint.dll >> /var/log/cron.log 2>&1" > /etc/cron.d/schedule
+RUN echo "0 8 */2 * * root /app/autoprint >> /var/log/cron.log 2>&1" > /etc/cron.d/schedule
 
 # Configure 
 
