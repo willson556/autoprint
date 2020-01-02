@@ -28,6 +28,7 @@ namespace autoPrint
             printingState = PrintingState.Load();
 
             var document = new PrintDocument();
+            document.DefaultPageSettings.Margins = Margins;
             document.PrintPage += PrintPage;
             document.Print();
 
