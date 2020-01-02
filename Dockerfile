@@ -21,8 +21,6 @@ RUN apt-get update -qq && apt-get -y install cron libgdiplus cups -qq --force-ye
 # Add export environment variable script and schedule
 RUN echo "0 8 */2 * * root /app/autoPrint >> /var/log/cron.log 2>&1" > /etc/cron.d/schedule
 
-# Configure 
-
 # Create log file
 RUN touch /var/log/cron.log
 RUN chmod 0666 /var/log/cron.log
