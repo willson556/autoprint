@@ -32,7 +32,7 @@ Schedule using Cron, Systemd, Windows Task Scheduler. Place the paper back into 
 
 ## Docker
 
-The provided docker image is set to run AutoPrint every day at 8:00 AM. Replace the provided URI with your printer's IPP (or some other CUPS-compatible) URI.
+The provided docker image is set to run AutoPrint every other day at 8:00 AM. Replace the provided URI with your printer's IPP (or some other CUPS-compatible) URI.
 
 ```sh
 docker pull thomaswillson/autoprint
