@@ -38,6 +38,7 @@ The provided docker image is set to run AutoPrint every other day at 8:00 AM. Re
 docker pull thomaswillson/autoprint
 docker run -d \
            --name autoprint \
+           -e TZ=America/Los_Angeles \
            -e PRINTER_URI=https://192.168.1.138:631/ipp/print \
            thomaswillson/autoprint
   ```
