@@ -54,9 +54,9 @@ namespace autoPrint
                 y += printingState.CurrentLineHeight + PatternGap.Height;
                 printingState.CurrentLineHeight = 0;
 
-                if (y > eventArgs.MarginBounds.Bottom)
+                if (y + patternSize.Height > eventArgs.MarginBounds.Bottom)
                 {
-                    y = 0; // Hopefully we have a new page.
+                    y = eventArgs.MarginBounds.Top; // Hopefully we have a new page.
                 }
             }
 
