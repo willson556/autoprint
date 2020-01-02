@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:3.1.1-sdk AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 
 ARG BUILDCONFIG=RELEASE
 
@@ -11,7 +11,7 @@ COPY . .
 RUN dotnet publish -c $BUILDCONFIG -o out
 
 # build runtime image
-FROM microsoft/dotnet:3.1.1-runtime 
+FROM mcr.microsoft.com/dotnet/core/runtime:3.1
 WORKDIR /app
 COPY --from=build /build/out ./
 
