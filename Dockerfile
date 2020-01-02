@@ -16,7 +16,7 @@ WORKDIR /app
 COPY --from=build /build/out ./
 
 # Install Cron, libgdiplus, cups
-RUN apt-get update -qq && apt-get -y install cron libgdiplus -qq --force-yes
+RUN apt-get update -qq && apt-get -y install cron libgdiplus cups -qq --force-yes
 
 # Add export environment variable script and schedule
 RUN echo "0 8 */2 * * root dotnet /app/autoprint.dll >> /var/log/cron.log 2>&1" > /etc/cron.d/schedule
