@@ -15,15 +15,20 @@ FROM mcr.microsoft.com/dotnet/core/runtime:3.1
 WORKDIR /app
 COPY --from=build /build/out ./
 
-# Install Cron & libgdiplus
+# Install Cron, libgdiplus, cups
 RUN apt-get update -qq && apt-get -y install cron libgdiplus -qq --force-yes
 
 # Add export environment variable script and schedule
 RUN echo "0 8 */2 * * root dotnet /app/autoprint.dll >> /var/log/cron.log 2>&1" > /etc/cron.d/schedule
 
+# Configure 
+
 # Create log file
 RUN touch /var/log/cron.log
 RUN chmod 0666 /var/log/cron.log
 
+# Copy script
+COPY start.sh start.sh
+
 # Run Cron
-CMD /usr/sbin/cron -f
+CMD sh start.sh
