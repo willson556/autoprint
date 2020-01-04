@@ -42,3 +42,8 @@ docker run -d \
            -e PRINTER_URI=https://192.168.1.138:631/ipp/print \
            thomaswillson/autoprint
   ```
+
+## References
+
+- https://www.codeproject.com/Articles/32239/Keep-Your-InkJet-Print-Head-Clean
+- https://github.com/hyettdotme/dotnetcron
